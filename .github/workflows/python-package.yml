@@ -33,7 +33,7 @@ jobs:
     - name: Install protoc
       run: |
         curl -L -o protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v23.4/protoc-23.4-linux-x86_64.zip"
-        unzip protoc.zip -d /usr
+        sudo unzip protoc.zip -d /usr
         rm protoc.zip
         protoc
     - name: Edit file
