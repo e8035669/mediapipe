@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:20.04
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
 
 MAINTAINER <mediapipe@google.com>
 
@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         nodejs \
         npm \
+        vim \
         python3-dev \
         python3-opencv \
         python3-pip \
@@ -50,7 +51,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 --slave /usr/bin/g++ g++ /usr/bin/g++-8
 RUN pip3 install --upgrade setuptools
 RUN pip3 install wheel
 RUN pip3 install future
@@ -70,6 +70,11 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
     chmod +x /bazel/installer.sh && \
     /bazel/installer.sh  && \
     rm -f /bazel/installer.sh
+
+RUN curl -L -o protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v23.4/protoc-23.4-linux-x86_64.zip" && \
+    unzip protoc.zip -d /usr && \
+    rm -rf protoc.zip
+
 
 COPY . /mediapipe/
 
