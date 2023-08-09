@@ -32,7 +32,7 @@ jobs:
       with:
         cuda: ${{ matrix.cuda-version }}
         method: 'network'
-        sub-packages: ["nvcc"]
+        sub-packages: '["nvcc"]'
 
     - name: Install dependencies
       run: |
