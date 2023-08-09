@@ -31,6 +31,7 @@ jobs:
       id: cuda-toolkit
       with:
         cuda: ${{ matrix.cuda-version }}
+        method: 'network'
 
     - name: Install dependencies
       run: |
