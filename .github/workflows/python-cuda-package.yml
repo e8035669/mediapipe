@@ -51,9 +51,10 @@ jobs:
         sudo unzip protoc.zip -d /usr
         rm protoc.zip
         protoc
-#     - name: Edit file
-#       run: |
-#         sed 's/^__version__.*/__version__\ =\ "0.10.2"/g' setup.py
+    - name: Edit version
+      run: |
+        version=$(echo "${{ matrix.cuda-version }}" | cut -d '.' -f 1,2 --output-delimiter='' - | tr -d '\0')
+        sed -i "s/^__version__.*/__version__\ =\ '0.10.3+cu${version}'/g" setup.py
 
     - name: Build package
       run: |
