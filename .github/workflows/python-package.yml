@@ -39,7 +39,7 @@ jobs:
         protoc
     - name: Edit file
       run: |
-        sed 's/^__version__.*/__version__\ =\ "0.10.2"/g' setup.py
+        sed 's/^__version__.*/__version__\ =\ "0.10.5"/g' setup.py
         
     - name: Build package
       run: |
