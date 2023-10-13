@@ -5,7 +5,7 @@ name: Python package
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "gl_support" ]
   pull_request:
     branches: [ "master" ]
 
@@ -17,34 +17,30 @@ jobs:
       fail-fast: false
       matrix:
         # python-version: ["3.9", "3.10", "3.11"]
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Docker info
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install wheel
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - uses: bazelbuild/setup-bazelisk@v2
-    - name: Install protoc
+        docker info
+
+    - name: Build image
       run: |
-        curl -L -o protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v23.4/protoc-23.4-linux-x86_64.zip"
-        sudo unzip protoc.zip -d /usr
-        rm protoc.zip
-        protoc
-    - name: Edit file
-      run: |
-        sed 's/^__version__.*/__version__\ =\ "0.10.5"/g' setup.py
-        
+        docker build -t mediapipe-conda .
+
     - name: Build package
       run: |
-        python setup.py bdist_wheel
+        docker run \
+          -e PY_VERSION \
+          -e HOST_USER_ID=$(id -u) \
+          -v ${PWD}:/mediapipe \
+          mediapipe-conda bash /mediapipe/.script/build_step.sh
+      env:
+        PY_VERSION: ${{ matrix.python-version }}
+
     - uses: actions/upload-artifact@v3
       with:
         name: my-artifact ${{ matrix.python-version }}
         path: dist/mediapipe*.whl
+
